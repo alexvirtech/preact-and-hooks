@@ -1,23 +1,26 @@
-import { useState, useEffect } from "preact/hooks"
+import { useState, useEffect, useContext } from "preact/hooks"
+import { MarketContext } from "../utils/context"
 import CoinRow from "./coinRow"
 
 export default function Market() {
-    const [data, setData] = useState(null)
+    //const [data, setData] = useState(null)
+    const { state, dispatch } = useContext(MarketContext)
 
     useEffect(() => {
         fetch("https://api.mtw-testnet.com/assets/all")
             .then((response) => response.json())
             .then((d) => {
-                setData(d)
+                //setData(d)
+                dispatch({ type: "SET_DATA", payload: d })
                 console.log(d)
             })
     }, [])
 
     return (
         <div>
-            <h1 class="text-2xl font-bold pb-4">Cryptocurrencies</h1>
-            {data &&
-                Object.entries(data).map(([key, value], index) => (
+            <h1 class="text-2xl font-bold pb-4">List of Cryptocurrencies</h1>
+            {state.data &&
+                Object.entries(state.data).map(([key, value], index) => (
                     <CoinRow
                         symbol={key}
                         coin={value}
